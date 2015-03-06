@@ -24,8 +24,8 @@ void main(void)
 	pUserApi = CThostFtdcTraderApi::CreateFtdcTraderApi();			// 创建UserApi
 	CTraderSpi* pUserSpi = new CTraderSpi();
 	pUserApi->RegisterSpi((CThostFtdcTraderSpi*)pUserSpi);			// 注册事件类
-	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);				// 注册公有流
-	pUserApi->SubscribePrivateTopic(THOST_TERT_QUICK);				// 注册私有流
+	pUserApi->SubscribePublicTopic(THOST_TERT_QUICK);				// 注册公有流，是否应该用RESUME
+	pUserApi->SubscribePrivateTopic(THOST_TERT_QUICK);				// 注册私有流，是否应该用RESUME
 	pUserApi->RegisterFront(FRONT_ADDR);							// connect
 	pUserApi->Init();
 

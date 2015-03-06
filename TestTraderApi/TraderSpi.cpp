@@ -36,6 +36,7 @@ bool IsFlowControl(int iResult)
 	return ((iResult == -2) || (iResult == -3));
 }
 
+//1) 连接成功后，在这里登陆
 void CTraderSpi::OnFrontConnected()
 {
 	cerr << "--->>> " << "OnFrontConnected" << endl;
@@ -54,12 +55,22 @@ void CTraderSpi::ReqUserLogin()
 	cerr << "--->>> 发送用户登录请求: " << iResult << ((iResult == 0) ? ", 成功" : ", 失败") << endl;
 }
 
+//2) 登陆成功后，在这里获取基础数据，进行结算日期确认
 void CTraderSpi::OnRspUserLogin(CThostFtdcRspUserLoginField *pRspUserLogin,
 		CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
 	cerr << "--->>> " << "OnRspUserLogin" << endl;
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
+		cerr << "基础数据: F" << pRspUserLogin->FrontID << " S"
+			<< pRspUserLogin->SessionID << " M"
+			<< pRspUserLogin->MaxOrderRef << " "
+			<< pRspUserLogin->SystemName << " "
+			<< pRspUserLogin->TradingDay << " "
+			<< pRspUserLogin->SHFETime << " "
+			<< pRspUserLogin->FFEXTime << " "
+			<< endl;
+
 		// 保存会话参数
 		FRONT_ID = pRspUserLogin->FrontID;
 		SESSION_ID = pRspUserLogin->SessionID;
@@ -86,9 +97,11 @@ void CTraderSpi::ReqSettlementInfoConfirm()
 	cerr << "--->>> 投资者结算结果确认: " << iResult << ((iResult == 0) ? ", 成功" : ", 失败") << endl;
 }
 
+//3) 查询结算后，在这里获取日期并查询合约
 void CTraderSpi::OnRspSettlementInfoConfirm(CThostFtdcSettlementInfoConfirmField *pSettlementInfoConfirm, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr << "--->>> " << "OnRspSettlementInfoConfirm" << endl;
+	cerr << "--->>> " << "OnRspSettlementInfoConfirm：" << 
+		pSettlementInfoConfirm->ConfirmDate << " " << pSettlementInfoConfirm->ConfirmTime << endl;
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
 		///请求查询合约
@@ -104,6 +117,7 @@ void CTraderSpi::ReqQryInstrument()
 	while (true)
 	{
 		int iResult = pUserApi->ReqQryInstrument(&req, ++iRequestID);
+		//流控时需要反复尝试
 		if (!IsFlowControl(iResult))
 		{
 			cerr << "--->>> 请求查询合约: "  << iResult << ((iResult == 0) ? ", 成功" : ", 失败") << endl;
@@ -117,12 +131,13 @@ void CTraderSpi::ReqQryInstrument()
 	} // while
 }
 
+//4) 查询合约后，在这里获取合约基础信息并查询资金账户
 void CTraderSpi::OnRspQryInstrument(CThostFtdcInstrumentField *pInstrument, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr << "--->>> " << "OnRspQryInstrument" << endl;
+	cerr << "--->>> " << "OnRspQryInstrument：" << pInstrument->InstrumentName << " " << pInstrument->VolumeMultiple << endl;
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
-		///请求查询合约
+		///请求资金账户
 		ReqQryTradingAccount();
 	}
 }
@@ -149,9 +164,10 @@ void CTraderSpi::ReqQryTradingAccount()
 	} // while
 }
 
+//5) 查询资金账户后，在这里获取合约基础信息并查询投资者该产品持仓
 void CTraderSpi::OnRspQryTradingAccount(CThostFtdcTradingAccountField *pTradingAccount, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr << "--->>> " << "OnRspQryTradingAccount" << endl;
+	cerr << "--->>> " << "OnRspQryTradingAccount：" << pTradingAccount->AccountID << " " << pTradingAccount->Balance << endl;
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
 		///请求查询投资者持仓
@@ -182,14 +198,16 @@ void CTraderSpi::ReqQryInvestorPosition()
 	} // while
 }
 
+//6) 查询持仓后，在这里获取合约基础信息并开始报单
 void CTraderSpi::OnRspQryInvestorPosition(CThostFtdcInvestorPositionField *pInvestorPosition, CThostFtdcRspInfoField *pRspInfo, int nRequestID, bool bIsLast)
 {
-	cerr << "--->>> " << "OnRspQryInvestorPosition" << endl;
+	//无法查询持仓
+	//cerr << "--->>> " << "OnRspQryInvestorPosition：" << pInvestorPosition->Position << " " << pInvestorPosition->PositionProfit << endl;
 	if (bIsLast && !IsErrorRspInfo(pRspInfo))
 	{
 		///报单录入请求
 		ReqOrderInsert();
-		//执行宣告录入请求
+		//行权请求
 		//ReqExecOrderInsert();
 		//询价录入
 		//ReqForQuoteInsert();
@@ -210,8 +228,7 @@ void CTraderSpi::ReqOrderInsert()
 	strcpy(req.InstrumentID, INSTRUMENT_ID);
 	///报单引用
 	strcpy(req.OrderRef, ORDER_REF);
-	///用户代码
-	//	TThostFtdcUserIDType	UserID;
+	///用户代码，这里填的就是投资者账户
 	strcpy(req.UserID, INVESTOR_ID);
 	///报单价格条件: 限价
 	req.OrderPriceType = THOST_FTDC_OPT_LimitPrice;
@@ -513,7 +530,7 @@ void CTraderSpi::OnRspQuoteAction(CThostFtdcInputQuoteActionField *pInpuQuoteAct
 	IsErrorRspInfo(pRspInfo);
 }
 
-///报单通知
+//7) 报单后，在这里获取订单状态
 void CTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
 {
 	cerr << "--->>> " << "OnRtnOrder"  << endl;
@@ -525,7 +542,8 @@ void CTraderSpi::OnRtnOrder(CThostFtdcOrderField *pOrder)
 			<<pOrder->StatusMsg << "  "
 			<< endl;
 		if (IsTradingOrder(pOrder))
-			;// ReqOrderAction(pOrder);
+			//如果未成交就撤单
+			ReqOrderAction(pOrder);
 		else if (pOrder->OrderStatus == THOST_FTDC_OST_Canceled)
 			cout << "--->>> 撤单成功" << endl;
 	}
@@ -564,10 +582,10 @@ void CTraderSpi::OnRtnQuote(CThostFtdcQuoteField *pQuote)
 	}
 }
 
-///成交通知
+//8) 报单后，在这里获取成交状态
 void CTraderSpi::OnRtnTrade(CThostFtdcTradeField *pTrade)
 {
-	cerr << "--->>> " << "OnRtnTrade"  << endl;
+	cerr << "--->>> " << "OnRtnTrade："  << pTrade->TradeTime << endl;
 }
 
 void CTraderSpi:: OnFrontDisconnected(int nReason)
