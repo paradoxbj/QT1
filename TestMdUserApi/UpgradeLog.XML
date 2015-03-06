@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><?xml-stylesheet type='text/xsl' href='_UpgradeReport_Files/UpgradeReport.xslt'?><UpgradeLog>
+<Properties><Property Name="Solution" Value="testMdUserApi">
+</Property><Property Name="解决方案文件" Value="E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.sln">
+</Property><Property Name="用户选项文件" Value="E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.suo">
+</Property><Property Name="Date" Value="2015年3月3日">
+</Property><Property Name="Time" Value="13:39">
+</Property></Properties><Event ErrorLevel="0" Project="" Source="testMdUserApi.sln" Description="文件已成功备份为 E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.sln.old">
+</Event><Event ErrorLevel="0" Project="" Source="testMdUserApi.suo" Description="文件已成功备份为 E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.suo.old">
+</Event><Event ErrorLevel="0" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Converting project file 'E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.vcproj'.">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="This application has been updated to include settings related to the User Account Control (UAC) feature of Windows Vista. By default, when run on Windows Vista with UAC enabled, this application is marked to run with the same privileges as the process that launched it. This marking also disables the application from running with virtualization. You can change UAC related settings from the Property Pages of the project.">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="VCWebServiceProxyGeneratorTool is no longer supported. The tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="0" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Web deployment to the local IIS server is no longer supported. The Web Deployment build tool has been removed from your project settings.">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Attribute 'Detect64BitPortabilityProblems' of 'VCCLCompilerTool' is not supported in this version and has been removed during conversion.">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="MSB8012: $(TargetName) ('testMdUserApi') does not match the Linker's OutputFile property value 'E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\bin\testMdApi.exe' ('testMdApi') in project configuration 'Release|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetName) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="1" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="MSB8012: $(TargetPath) ('E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\bin\testMdUserApi.exe') does not match the Linker's OutputFile property value 'E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\bin\testMdApi.exe' ('E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\bin\testMdApi.exe') in project configuration 'Release|Win32'. This may cause your project to build incorrectly. To correct this, please make sure that $(TargetPath) property value matches the value specified in %(Link.OutputFile).">
+</Event><Event ErrorLevel="0" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Done converting to new project file 'E:\360云盘\文档\CTP\v6.3.0_20140523_qqtraderapi\testMdUserApi_new.doc\testMdUserApi.vcxproj'.">
+</Event><Event ErrorLevel="3" Project="testMdUserApi" Source="testMdUserApi.vcproj" Description="Converted">
+</Event><Event ErrorLevel="0" Project="" Source="testMdUserApi.sln" Description="成功转换解决方案">
+</Event><Event ErrorLevel="3" Project="" Source="testMdUserApi.sln" Description="Converted">
+</Event></UpgradeLog>
